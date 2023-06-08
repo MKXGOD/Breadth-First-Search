@@ -4,6 +4,9 @@ public class GameTile : MonoBehaviour
 {
     public bool HasPath => distance != int.MaxValue;
     public bool IsAlternative { get; set; }
+    public Vector3 ExitPoint { get; set; }
+
+    public GameTile NextTileOnPath => nextOnPath;
 
     [SerializeField] private Transform arrow;
 
@@ -52,6 +55,7 @@ public class GameTile : MonoBehaviour
    {
         distance = 0;
         nextOnPath = null;
+        ExitPoint = transform.localPosition;
    }
 
    private GameTile GrowPathTo(GameTile neighbor)
@@ -62,6 +66,7 @@ public class GameTile : MonoBehaviour
         Debug.Assert(HasPath, "No path!");
         neighbor.distance = distance + 1;
         neighbor.nextOnPath = this;
+        neighbor.ExitPoint = (neighbor.transform.localPosition + transform.localPosition) * 0.5f;
         return neighbor.Content.Type != GameTileContentType.Wall ? neighbor : null;
     }
 

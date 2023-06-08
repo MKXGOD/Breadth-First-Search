@@ -1,13 +1,12 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [CreateAssetMenu]
-public class GameTileContentFactory : ScriptableObject
+public class GameTileContentFactory : GameObjectFactory
 {
     [SerializeField] GameTileContent _destinationPrefab;
     [SerializeField] GameTileContent _emptyPrefab;
     [SerializeField] GameTileContent _wallPrefab;
-    private Scene _contentScene;
+    [SerializeField] GameTileContent _spawnPointPrefab;
     public void Reclaim(GameTileContent content)
     { 
         Debug.Assert(content.OriginFactory == this, "Wrong factory reclaimed!");
@@ -16,30 +15,9 @@ public class GameTileContentFactory : ScriptableObject
 
     private GameTileContent Get (GameTileContent prefab)
     { 
-        GameTileContent instance = Instantiate(prefab);
+        GameTileContent instance = CreateGameObjectInstance(prefab);
         instance.OriginFactory = this;
-        MoveToFactoryScene(instance.gameObject);
         return instance;
-    }
-
-    private void MoveToFactoryScene(GameObject gameObject)
-    {
-        if (!_contentScene.isLoaded)
-        {
-            if (Application.isEditor)
-            {
-                _contentScene = SceneManager.GetSceneByName(name);
-                if (!_contentScene.isLoaded)
-                {
-                    _contentScene = SceneManager.CreateScene(name);
-                }
-            }
-            else
-            {
-                _contentScene = SceneManager.CreateScene(name);
-            }
-        }
-        SceneManager.MoveGameObjectToScene(gameObject, _contentScene);
     }
     public GameTileContent Get(GameTileContentType type)
     {
@@ -48,6 +26,7 @@ public class GameTileContentFactory : ScriptableObject
             case GameTileContentType.Destination: return Get(_destinationPrefab);
             case GameTileContentType.Empty: return Get(_emptyPrefab);
             case GameTileContentType.Wall: return Get(_wallPrefab);
+            case GameTileContentType.SpawnPoint: return Get(_spawnPointPrefab);
         }
         Debug.Assert(false, "Unsupported type: " + type);
         return null;
