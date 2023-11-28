@@ -40,7 +40,7 @@ public class Game : MonoBehaviour
         {
             _board.ShowPaths = !_board.ShowPaths;
         }
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             _board.ShowGrid = !_board.ShowGrid;
         }
